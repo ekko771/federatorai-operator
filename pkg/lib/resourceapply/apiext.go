@@ -19,6 +19,21 @@ import (
 
 var log = logf.Log.WithName("controller_alamedaservice")
 
+func CheckClusterType(client apiextclientv1beta1.CustomResourceDefinitionsGetter) string {
+	//crdName := "alamedaanomalies.analysis.containers.ai"
+	crdName := "projects.workflow.nks.netapp.io"
+	_, err := client.CustomResourceDefinitions().Get(crdName, metav1.GetOptions{})
+	if apierrors.IsNotFound(err) {
+		log.Info("Not Found CRD", "CustomResourceDefinition.Name", crdName)
+		return "Opensift"
+	} else if err == nil {
+		log.Info("Found CRD", "CustomResourceDefinition.Name", crdName)
+		return "NKS"
+	} else {
+		return "Opensift"
+	}
+}
+
 func ApplyCustomResourceDefinition(client apiextclientv1beta1.CustomResourceDefinitionsGetter,
 	gcIns *rbacv1.ClusterRole, scheme *runtime.Scheme, required *apiextv1beta1.CustomResourceDefinition,
 	asp *alamedaserviceparamter.AlamedaServiceParamter) (*apiextv1beta1.CustomResourceDefinition, error) {
