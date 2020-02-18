@@ -32,6 +32,28 @@ spec:
         - name: federatorai-agent-app-config
           mountPath: /etc/alameda/federatorai-agent/output/alameda_datahub.toml
           subPath: alameda_datahub.toml
+        livenessProbe:
+          exec:
+            command:
+            - /opt/alameda/federatorai-agent/bin/transmitter
+            - probe
+            - --type=liveness
+          failureThreshold: 3
+          initialDelaySeconds: 5
+          periodSeconds: 5
+          successThreshold: 1
+          timeoutSeconds: 1
+        readinessProbe:
+          exec:
+            command:
+            - /opt/alameda/federatorai-agent/bin/transmitter
+            - probe
+            - --type=readiness
+          failureThreshold: 3
+          initialDelaySeconds: 5
+          periodSeconds: 5
+          successThreshold: 1
+          timeoutSeconds: 1
       volumes:
       - name: federatorai-agent-app-config
         configMap:
