@@ -85,3 +85,8 @@ $(GOBINDATA_BIN):
 help:
 	@grep -E '^[a-zA-Z/0-9_-]+:.*?## .*$$' $(MAKEFILE_LIST) | sort | awk 'BEGIN {FS = ":.*?## "}; {printf "\033[36m%-30s\033[0m %s\n", $$1, $$2}'
 
+code-gen:
+	vendor/k8s.io/code-generator/generate-groups.sh \
+	deepcopy github.com/containers-ai/federatorai-operator/pkg/apis \
+	github.com/containers-ai/federatorai-operator/pkg/apis \
+	"federatorai:v1alpha1"

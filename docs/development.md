@@ -46,3 +46,7 @@ Limitation:
 2. Procedure to deploy ConfigMap must those workload controller.
 
 To let Federatorai-Operator restart Pods which mounting ConfigMap as volume, every synchronization functions(e.g. syncDeployment/syncStatefulSet/syncDaemonSet) will call [patchConfigMapResourceVersionIntoPodTemplateSpecLabel](./../pkg/controller/alamedaservice/alamedaservice_controller.go). This function will get the ConfigMap.Metadata.ResourceVersion and patch this value into PodTemplateSpec.Labels, so if the ConfigMap has been updated, the PodTemplateSpec will also be updated, those synchronization functions will update Deployment/StatefulSet/DaemonSet to trigger k8s restart these Pods.
+
+## Code generation for CustomResource
+To generate code that implements funciton "DeepCopy" in custom resource's structure, execute targe "code-gen" in Makefile.
+For further usage of k8s code-gen tools, inspect [doc](#https://blog.openshift.com/kubernetes-deep-dive-code-generation-customresources/).
