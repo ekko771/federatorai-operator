@@ -69,6 +69,7 @@ spec:
           failureThreshold: 20
           initialDelaySeconds: 5
           periodSeconds: 5
+          timeoutSeconds: 5
         livenessProbe:
           exec:
             command:
@@ -78,6 +79,7 @@ spec:
           failureThreshold: 20
           initialDelaySeconds: 5
           periodSeconds: 5
+          timeoutSeconds: 5
       volumes:
       - name:  admission-controller-data-storage
       - name:  admission-controller-log-storage

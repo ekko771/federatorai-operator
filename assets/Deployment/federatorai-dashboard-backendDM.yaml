@@ -40,6 +40,7 @@ spec:
               - --type=readiness
             initialDelaySeconds: 5
             periodSeconds: 5
+            timeoutSeconds: 5
           livenessProbe:
             exec:
               command:
@@ -47,6 +48,7 @@ spec:
               - --type=liveness
             initialDelaySeconds: 5
             periodSeconds: 5
+            timeoutSeconds: 5
           volumeMounts:
           - mountPath: /federatorai-portal/server/config
             name: federatorai-dashboard-backend-config

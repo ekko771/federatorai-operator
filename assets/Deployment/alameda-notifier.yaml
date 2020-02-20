@@ -42,6 +42,7 @@ spec:
             - --readiness-probe              
           initialDelaySeconds: 5
           periodSeconds: 5
+          timeoutSeconds: 5
         livenessProbe:
           exec:
             command:
@@ -49,6 +50,7 @@ spec:
             - --liveness-probe              
           initialDelaySeconds: 5
           periodSeconds: 5
+          timeoutSeconds: 5
         volumeMounts:
         - mountPath: /tmp/k8s-webhook-server/serving-certs
           name: cert
