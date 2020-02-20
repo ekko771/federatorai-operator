@@ -703,14 +703,14 @@
 
 [[projects]]
   branch = "master"
-  digest = "1:c0619d0c0c2f585812ce9f844eafb9c5660f5bd723c9ac0cd60b7fac665d2ac6"
+  digest = "1:325a1b73817aa79fc85f10376ed41ea607f7dd7f6c6bfa46df6a28ef2857941f"
   name = "golang.org/x/xerrors"
   packages = [
     ".",
     "internal",
   ]
   pruneopts = "NT"
-  revision = "1b5146add8981d58be77b16229c0ff0f8bebd8c1"
+  revision = "9bdfabe68543c54f90421aeb9a60ef8061b5b544"
 
 [[projects]]
   digest = "1:8392b5c29adedc5f85c66b48bb53b6c49dd91d8540f3cad5d43ef7277946718f"
@@ -823,6 +823,14 @@
   pruneopts = "NT"
   revision = "51d6538a90f86fe93ac480b35f37b2be17fef232"
   version = "v2.2.2"
+
+[[projects]]
+  branch = "v3"
+  digest = "1:8d2493f69731a9070d01661e1ed17999fcbe4ef6aa5b405ce16c69af12bb00a4"
+  name = "gopkg.in/yaml.v3"
+  packages = ["."]
+  pruneopts = "NT"
+  revision = "a6ecf24a6d716d933bcbc255a2f5d492285b54f5"
 
 [[projects]]
   digest = "1:e6dbaffcc5407ea1fa7633f6ccb7e53ff3952eed041e9cbe4f97c9af87913ef1"
@@ -1185,6 +1193,7 @@
     "github.com/containers-ai/api/alameda_api/v1alpha1/datahub",
     "github.com/containers-ai/api/alameda_api/v1alpha1/datahub/events",
     "github.com/containers-ai/api/datahub/keycodes",
+    "github.com/coreos/prometheus-operator/pkg/apis/monitoring/v1",
     "github.com/ghodss/yaml",
     "github.com/go-logr/logr",
     "github.com/go-logr/zapr",
@@ -1211,6 +1220,7 @@
     "google.golang.org/genproto/googleapis/rpc/code",
     "google.golang.org/genproto/googleapis/rpc/status",
     "google.golang.org/grpc",
+    "gopkg.in/yaml.v3",
     "k8s.io/api/admissionregistration/v1beta1",
     "k8s.io/api/apps/v1",
     "k8s.io/api/core/v1",
@@ -1225,10 +1235,13 @@
     "k8s.io/apimachinery/pkg/api/resource",
     "k8s.io/apimachinery/pkg/apis/meta/v1",
     "k8s.io/apimachinery/pkg/apis/meta/v1/unstructured",
+    "k8s.io/apimachinery/pkg/labels",
     "k8s.io/apimachinery/pkg/runtime",
     "k8s.io/apimachinery/pkg/runtime/schema",
     "k8s.io/apimachinery/pkg/runtime/serializer",
+    "k8s.io/apimachinery/pkg/selection",
     "k8s.io/apimachinery/pkg/types",
+    "k8s.io/apimachinery/pkg/util/intstr",
     "k8s.io/apimachinery/pkg/util/uuid",
     "k8s.io/apimachinery/pkg/util/wait",
     "k8s.io/client-go/kubernetes",

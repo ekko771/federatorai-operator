@@ -28,14 +28,20 @@ else
   IMAGE_BUILD_CMD = docker build
 endif
 
+#.PHONY: generate-k8s
+#generate-k8s:
+	#operator-sdk generate k8s
+
 .PHONY: pkg/assets/bindata.go
 pkg/assets/bindata.go: $(GOBINDATA_BIN)
 	# Using "-modtime 1" to make generate target deterministic. It sets all file time stamps to unix timestamp 1
 	cd assets && $(GOBINDATA_BIN) -pkg assets -o ../$@ \
 		./... \
 
-
-
+.PHONY: cmd/patch/pkg/assets/bindata.go
+cmd/patch/pkg/assets/bindata.go: $(GOBINDATA_BIN)
+	cd cmd/patch/assets && $(GOBINDATA_BIN) -pkg assets -o ../../../$@ \
+		./... \
 
 .PHONY: depend
 depend: $(GOBINDATA_BIN)
@@ -47,12 +53,12 @@ depend-update:
 	dep ensure -update
 
 .PHONY: build
-build: pkg/assets/bindata.go## build binaries
-	$(DOCKER_CMD) go build $(GOGCFLAGS) -ldflags "$(LD_FLAGS)" -o "$(BUILD_DEST)" "$(REPO_PATH)/cmd"
+build: pkg/assets/bindata.go cmd/patch/pkg/assets/bindata.go## build binaries
+	$(DOCKER_CMD) go build $(GOGCFLAGS) -ldflags "$(LD_FLAGS)" -o "$(BUILD_DEST)" "$(REPO_PATH)/cmd/manager"
 
 .PHONY: images
 images: ## Create images
-	$(IMAGE_BUILD_CMD) -t "$(IMAGE):$(IMAGE_TAG)" -t "$(IMAGE):$(MUTABLE_TAG)" ./
+	$(IMAGE_BUILD_CMD) -t "$(IMAGE):$(IMAGE_TAG)" -t "$(IMAGE):$(MUTABLE_TAG)" -f Dockerfile.ubi ./
 
 .PHONY: push
 push:

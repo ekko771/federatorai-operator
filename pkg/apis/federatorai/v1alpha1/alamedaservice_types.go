@@ -41,20 +41,22 @@ type AlamedaServiceSpec struct {
 	// Important: Run "operator-sdk generate k8s" to regenerate code after modifying this file
 	// Add custom validation using kubebuilder tags: https://book.kubebuilder.io/beyond_basics/generating_crd.html
 	// +kubebuilder:validation:Enum=openshift3.9
-	Platform          Platform              `json:"platform,omitempty"`
-	EnableExecution   bool                  `json:"enableExecution"`
-	EnableGUI         bool                  `json:"enableGui"`
-	EnableDispatcher  *bool                 `json:"enableDispatcher"`
-	EnablePreloader   bool                  `json:"enablePreloader"`
-	SelfDriving       bool                  `json:"selfDriving"`
-	Version           string                `json:"version"`
-	ImageLocation     string                `json:"imageLocation"`
-	PrometheusService string                `json:"prometheusService"`
-	Storages          []StorageSpec         `json:"storages"`
-	ServiceExposures  []ServiceExposureSpec `json:"serviceExposures"`
-	EnableWeavescope  bool                  `json:"enableWeavescope"`
-	Keycode           KeycodeSpec           `json:"keycode"`
-	Kafka             KafkaSpec             `json:"kafka"`
+	Platform                 Platform              `json:"platform,omitempty"`
+	EnableExecution          bool                  `json:"enableExecution"`
+	EnableGUI                bool                  `json:"enableGui"`
+	EnableDispatcher         *bool                 `json:"enableDispatcher"`
+	EnablePreloader          bool                  `json:"enablePreloader"`
+	SelfDriving              bool                  `json:"selfDriving"`
+	AutoPatchPrometheusRules bool                  `json:"autoPatchPrometheusRules"`
+	Version                  string                `json:"version"`
+	ImageLocation            string                `json:"imageLocation"`
+	PrometheusService        string                `json:"prometheusService"`
+	Storages                 []StorageSpec         `json:"storages"`
+	ServiceExposures         []ServiceExposureSpec `json:"serviceExposures"`
+	EnableWeavescope         bool                  `json:"enableWeavescope"`
+	Keycode                  KeycodeSpec           `json:"keycode"`
+	Kafka                    KafkaSpec             `json:"kafka"`
+
 	//Component Section Schema
 	InfluxdbSectionSet                  AlamedaComponentSpec    `json:"alamedaInfluxdb"`
 	GrafanaSectionSet                   AlamedaComponentSpec    `json:"alamedaGrafana"`

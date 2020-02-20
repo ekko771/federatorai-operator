@@ -114,6 +114,7 @@ rules:
   - list
   - watch
   - update
+  - get
 - apiGroups:
   - extensions
   - apps
@@ -252,6 +253,29 @@ rules:
   - "*"
   verbs:
   - "*"
+- apiGroups:
+  - monitoring.coreos.com
+  resources:
+  - prometheusrules
+  verbs:
+  - create
+  - get
+  - list
+  - update
+  - delete
+#- apiGroups:
+  #- monitoring.coreos.com
+  #resources:
+  #- servicemonitors
+  #verbs:
+  #- list
+  #- update
+- apiGroups:
+  - monitoring.coreos.com
+  resources:
+  - prometheuses
+  verbs:
+  - list
 ---
 apiVersion: rbac.authorization.k8s.io/v1
 kind: ClusterRole
