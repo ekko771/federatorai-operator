@@ -156,6 +156,17 @@ check_alameda_datahub_tag()
     exit 7
 }
 
+check_prometheus_metrics()
+{
+    current_operator_pod_name="`kubectl get pods -n $install_namespace |grep "federatorai-operator-"|awk '{print $1}'|head -1`"
+    kubectl exec $current_operator_pod_name -n $install_namespace -- /usr/bin/federatorai-operator prom_check > /dev/null 2>&1
+    if [ "$?" != "0" ];then
+        need_prometheus_rule_patch="y"
+    else
+        need_prometheus_rule_patch="n"
+    fi
+}
+
 wait_until_pods_ready()
 {
   period="$1"
@@ -435,10 +446,13 @@ done
 # Modify federator.ai operator yaml(s)
 # for tag
 sed -i "s/:latest$/:${tag_number}/g" 03*.yaml
-if [ "$need_upgrade" = "y" ];then
-    # for upgrade - stop operator before applying new alamedaservice
-    sed -i "s/replicas: 1/replicas: 0/g" 03*.yaml
-fi
+
+# No need for recent build
+# if [ "$need_upgrade" = "y" ];then
+#     # for upgrade - stop operator before applying new alamedaservice
+#     sed -i "s/replicas: 1/replicas: 0/g" 03*.yaml
+# fi
+
 # for namespace
 sed -i "s/name: federatorai/name: ${install_namespace}/g" 00*.yaml
 sed -i "s/namespace: federatorai/namespace: ${install_namespace}/g" 01*.yaml 03*.yaml 05*.yaml 06*.yaml 07*.yaml
@@ -490,6 +504,25 @@ done
 
 wait_until_pods_ready $max_wait_pods_ready_time 30 $install_namespace 1
 echo -e "\n$(tput setaf 6)Install Federator.ai operator $tag_number successfully$(tput sgr 0)"
+
+check_prometheus_metrics
+
+if [ "$need_prometheus_rule_patch" = "y" ]; then
+    default="y"
+    echo "$(tput setaf 127)Do you want to patch the prometheus rule to meet the Federator.ai requirement?$(tput sgr 0)"
+    read -r -p "$(tput setaf 127)Choose 'n' will abort the installation process. [default: y]: $(tput sgr 0): " patch_prometheus_rule </dev/tty
+    patch_prometheus_rule=${patch_prometheus_rule:-$default}
+fi
+
+if [ "$need_prometheus_rule_patch" = "y" ] && [ "$patch_prometheus_rule" = "n" ]; then
+    echo -e "\n$(tput setaf 1)Uninstalling Federator.ai operator...$(tput sgr 0)"
+    for yaml_fn in `ls [0-9]*.yaml | sort -nr`; do
+        echo "Deletiabort the installationng ${yaml_fn}..."
+        kubectl delete -f ${yaml_fn}
+    done
+    leave_prog
+    exit 8
+fi
 
 alamedaservice_example="alamedaservice_sample.yaml"
 cr_files=( "alamedascaler.yaml" "alamedadetection.yaml" "alamedanotificationchannel.yaml" "alamedanotificationtopic.yaml" )
