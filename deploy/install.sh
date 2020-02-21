@@ -505,7 +505,8 @@ done
 wait_until_pods_ready $max_wait_pods_ready_time 30 $install_namespace 1
 echo -e "\n$(tput setaf 6)Install Federator.ai operator $tag_number successfully$(tput sgr 0)"
 
-check_prometheus_metrics
+# Run check_prometheus_metrics only if not specified need_prometheus_rule_patch
+[ "${need_prometheus_rule_patch}" = "" ] && check_prometheus_metrics
 
 if [ "$need_prometheus_rule_patch" = "y" ]; then
     default="y"
