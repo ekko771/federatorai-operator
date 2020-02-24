@@ -67,6 +67,3 @@ groups:
           node_namespace_pod:kube_pod_info:
         )
       record: 'node:node_memory_utilisation:'
-    - expr: |
-        apiserver_request_total
-      record: apiserver_request_count

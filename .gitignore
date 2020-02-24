@@ -22,4 +22,5 @@ debug
 
 # binary data
 pkg/assets/*.go
+cmd/patch/pkg/assets/*.go
 *.log
