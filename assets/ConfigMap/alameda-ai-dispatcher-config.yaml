@@ -1,0 +1,202 @@
+apiVersion: v1
+kind: ConfigMap
+metadata:
+  name: alameda-ai-dispatcher-config
+  namespace: {{.NameSpace}}
+data:
+  ai-dispatcher.toml: |-
+    hourlyPredict = false
+
+    [datahub]
+    address = "datahub.alameda.svc.cluster.local:50050"
+    connRetry = 5
+      [datahub.query]
+      retry = 3
+      retryInterval = 10 # seconds
+    
+    [queue]
+    url = "amqp://admin:adminpass@rabbitmq.alameda.svc.cluster.local:5672"
+      [queue.retry]
+      publishTime = 5
+      publishIntervalMs = 3000
+      consumeTime = 5
+      consumeIntervalMs = 3000
+      connectIntervalMs = 3000
+      ackTimeoutSec = 3
+      [queue.consumer]
+      reconnectInterval = 30 #seconds
+    
+    [serviceSetting]
+    granularities = ["30s", "1m", "1h", "6h", "24h"]
+    predictUnits = ["POD", "GPU", "NAMESPACE",
+      "APPLICATION", "CLUSTER", "CONTROLLER", "NODE"
+    ]
+    # must put NODE predict unit at last, because to send
+    # NODE jobs with granularity 30s depends on POD job
+    # with granularity 30s are sent
+    
+    [granularities]
+    
+      [granularities.24h]
+      dataGranularity = "24h"
+      dataGranularitySec = 86400
+      predictionSteps = 30
+      predictionJobSendIntervalSec = 86400
+      modelJobSendIntervalSec = 86400
+    
+      [granularities.6h]
+      dataGranularity = "6h"
+      dataGranularitySec = 21600
+      predictionSteps = 30
+      predictionJobSendIntervalSec = 21600
+      modelJobSendIntervalSec = 21600
+    
+      [granularities.1h]
+      dataGranularity = "1h"
+      dataGranularitySec = 3600
+      predictionSteps = 30
+      predictionJobSendIntervalSec = 3600
+      modelJobSendIntervalSec = 3600
+    
+      [granularities.1m]
+      dataGranularity = "1m"
+      dataGranularitySec = 60
+      predictionSteps = 60
+      predictionJobSendIntervalSec = 60
+      modelJobSendIntervalSec = 60
+    
+      [granularities.30s]
+      dataGranularity = "30s"
+      dataGranularitySec = 30
+      predictionSteps = 30
+      predictionJobSendIntervalSec = 30
+      modelJobSendIntervalSec = 30
+    
+    [predictUnits]
+    
+      [predictUnits.POD]
+      type = "POD"
+    
+      [predictUnits.NODE]
+      type = "NODE"
+    
+      [predictUnits.GPU]
+      type = "GPU"
+    
+      [predictUnits.NAMESPACE]
+      type = "NAMESPACE"
+    
+      [predictUnits.APPLICATION]
+      type = "APPLICATION"
+    
+      [predictUnits.CLUSTER]
+      type = "CLUSTER"
+    
+      [predictUnits.CONTROLLER]
+      type = "CONTROLLER"
+    
+    [log]
+    setLogcallers = true
+    outputLevel = "info" # debug, info, warn, error, fatal, none
+    
+    [model]
+    enabled = false
+    timeout = 180
+    
+    [measurements]
+      current = "mape"
+      minimumDataPoints = 5
+      maximumDataPoints = 5
+      [measurements.mape]
+      threshold = 15
+      [measurements.rmse]
+      threshold = 10
+        [measurements.rmse.normalization]
+        cpu = 1 #millicores
+        memory = 1000000 #bytes
+        dutyCycle = 0.2
+    
+    # api proto metric type
+    [metricType]
+    undefined = 0
+    cpu_usage_seconds_percentage = 1
+    memory_usage_bytes = 2
+    power_usage_watts = 3
+    temperature_celsius  = 4
+    duty_cycle = 5
+    current_offset = 6
+    
+    # api proto table
+    [scope]
+    undefined = 0
+    application = 1
+    metric = 2
+    planning = 3
+    prediction = 4
+    recommendation = 5
+    resource = 6
+    
+    # api proto aggregation function
+    [aggregation]
+    none = 0
+    max = 1
+    avg = 2
+    
+    [[units]]
+    enabled = true
+    scope = "application"
+    category = "kafka"
+    type = "topic"
+    measurement = "kafka_topic"
+    idKeys = ["cluster_name", "namespace", "name"]
+    granularities = ["1m"]
+    metricTypes = ["current_offset"]
+    predictor = "SARIMAX"
+    
+      [units.metric]
+      scope = "metric"
+      category = "kafka"
+      type = "topic"
+      aggregation = "avg"
+        [units.metric.valueKeys]
+        value = "value"
+    
+      [units.prediction]
+      scope = "prediction"
+      category = "kafka"
+      type = "topic"
+        [units.prediction.valueKeys]
+        modelID = "model_id"
+        predictID = "prediction_id"
+        granularity = "granularity"
+        value = "value"
+    
+    
+    [[units]]
+    enabled = true
+    scope = "application"
+    category = "kafka"
+    type = "consumer_group"
+    measurement = "kafka_consumer_group"
+    idKeys = ["cluster_name", "namespace", "name", "topic_name"]
+    granularities = ["1m"]
+    metricTypes = ["current_offset"]
+    predictor = "SARIMAX"
+    
+      [units.metric]
+      scope = "metric"
+      category = "kafka"
+      type = "consumer_group"
+      aggregation = "avg"
+        [units.metric.valueKeys]
+        value = "value"
+    
+      [units.prediction]
+      scope = "prediction"
+      category = "kafka"
+      type = "consumer_group"
+        [units.prediction.valueKeys]
+        modelID = "model_id"
+        predictID = "prediction_id"
+        granularity = "granularity"
+        value = "value"

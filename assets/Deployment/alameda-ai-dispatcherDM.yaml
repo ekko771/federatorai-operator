@@ -56,3 +56,11 @@ spec:
             initialDelaySeconds: 5
             periodSeconds: 5
             timeoutSeconds: 5
+          volumeMounts: 
+          - name: alameda-ai-dispatcher-config
+            mountPath: /etc/alameda/ai-dispatcher/ai-dispatcher.toml
+            subPath: ai-dispatcher.toml
+      volumes:
+        - name: alameda-ai-dispatcher-config
+          configMap:
+            name: alameda-ai-dispatcher-config

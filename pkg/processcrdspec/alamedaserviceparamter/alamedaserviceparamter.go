@@ -141,6 +141,7 @@ var (
 	aiDispatcherList = []string{
 		"Deployment/alameda-ai-dispatcherDM.yaml",
 		"Service/alameda-ai-dispatcher.yaml",
+		"ConfigMap/alameda-ai-dispatcher-config.yaml",
 	}
 
 	weavescopeList = []string{
