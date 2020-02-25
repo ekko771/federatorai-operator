@@ -407,6 +407,7 @@ func (r *ReconcileAlamedaService) Reconcile(request reconcile.Request) (reconcil
 			return reconcile.Result{Requeue: true, RequeueAfter: 1 * time.Second}, nil
 		}
 	}
+
 	//Uninstall GUI Component
 	if !asp.EnableGUI {
 		resource := r.removeUnsupportedResource(*alamedaserviceparamter.GetGUIResource())
@@ -438,6 +439,23 @@ func (r *ReconcileAlamedaService) Reconcile(request reconcile.Request) (reconcil
 			return reconcile.Result{Requeue: true, RequeueAfter: 1 * time.Second}, nil
 		}
 	}
+	//Uninstall vpa components
+	if !asp.EnableVPA {
+		resource := r.removeUnsupportedResource(alamedaserviceparamter.GetVPAResource())
+		if err := r.uninstallResource(resource); err != nil {
+			log.V(-1).Info("Uninstall vpa resources failed, retry reconciling AlamedaService", "AlamedaService.Namespace", instance.Namespace, "AlamedaService.Name", instance.Name, "msg", err.Error())
+			return reconcile.Result{Requeue: true, RequeueAfter: 1 * time.Second}, nil
+		}
+	}
+	//Uninstall vpa components
+	if !asp.EnableGPU {
+		resource := r.removeUnsupportedResource(alamedaserviceparamter.GetFederatoraiAgentGPU())
+		if err := r.uninstallResource(resource); err != nil {
+			log.V(-1).Info("Uninstall federatorai-agent-gpu resources failed, retry reconciling AlamedaService", "AlamedaService.Namespace", instance.Namespace, "AlamedaService.Name", instance.Name, "msg", err.Error())
+			return reconcile.Result{Requeue: true, RequeueAfter: 1 * time.Second}, nil
+		}
+	}
+
 	//Uninstall PersistentVolumeClaim Source
 	pvcResource := asp.GetUninstallPersistentVolumeClaimSource()
 	if err := r.uninstallPersistentVolumeClaim(instance, pvcResource); err != nil {
@@ -568,6 +586,28 @@ func (r *ReconcileAlamedaService) newComponentConfig(namespace corev1.Namespace,
 		},
 	}
 
+	execition := component.ExecutionConfig{}
+	if asp.EnableVPA {
+		execition.EnabledVPA = true
+	}
+
+	faiAgentGPU := component.FederatoraiAgentGPUConfig{}
+	faiAgentGPUSectionSet := alamedaService.Spec.FederatoraiAgentGPUSectionSet
+	faiAgentGPU.Enabled = asp.EnableGPU
+	if faiAgentGPUSectionSet.Prometheus != nil {
+		faiAgentGPU.Datasource.Prometheus.Address = faiAgentGPUSectionSet.Prometheus.Address
+		faiAgentGPU.Datasource.Prometheus.BasicAuth.Username = faiAgentGPUSectionSet.Prometheus.Username
+		faiAgentGPU.Datasource.Prometheus.BasicAuth.Password = faiAgentGPUSectionSet.Prometheus.Password
+	}
+	if faiAgentGPUSectionSet.InfluxDB != nil {
+		faiAgentGPU.Datasource.InfluxDB.Address = faiAgentGPUSectionSet.InfluxDB.Address
+		faiAgentGPU.Datasource.InfluxDB.BasicAuth.Username = faiAgentGPUSectionSet.InfluxDB.Username
+		faiAgentGPU.Datasource.InfluxDB.BasicAuth.Password = faiAgentGPUSectionSet.InfluxDB.Password
+	}
+
+	aiDispatcher := component.AIDispatcherConfig{}
+	aiDispatcher.Enabled = asp.EnableDispatcher
+
 	componentConfg := component.NewComponentConfig(podTemplateConfig, alamedaService,
 		component.WithNamespace(namespace.Name),
 		component.WithImageConfig(imageConfig),
@@ -575,6 +615,9 @@ func (r *ReconcileAlamedaService) newComponentConfig(namespace corev1.Namespace,
 		component.WithPodSecurityPolicyVersion(r.podSecurityPolicesApiGroupVersion.Version),
 		component.WithPrometheusConfig(prometheusConfig),
 		component.WithKafkaConfig(kafka),
+		component.WithExecutionConfig(execition),
+		component.WithFederatoraiAgentGPUConfig(faiAgentGPU),
+		component.WithAIDispatcherConfig(aiDispatcher),
 	)
 	return componentConfg, nil
 }
@@ -605,7 +648,7 @@ func (r *ReconcileAlamedaService) syncCustomResourceDefinition(instance *federat
 	gcIns *rbacv1.ClusterRole, asp *alamedaserviceparamter.AlamedaServiceParamter,
 	resource *alamedaserviceparamter.Resource) error {
 	for _, fileString := range resource.CustomResourceDefinitionList {
-		crd := componentConfig.RegistryCustomResourceDefinition(fileString)
+		crd := componentConfig.NewCustomResourceDefinition(fileString)
 		_, err := resourceapply.ApplyCustomResourceDefinition(r.apiextclient.ApiextensionsV1beta1(), gcIns, r.scheme, crd, asp)
 		if err != nil {
 			return errors.Wrapf(err, "syncCustomResourceDefinition faild: CustomResourceDefinition.Name: %s", crd.Name)
@@ -616,7 +659,7 @@ func (r *ReconcileAlamedaService) syncCustomResourceDefinition(instance *federat
 
 func (r *ReconcileAlamedaService) uninstallCustomResourceDefinition(resource *alamedaserviceparamter.Resource) {
 	for _, fileString := range resource.CustomResourceDefinitionList {
-		crd := componentConfig.RegistryCustomResourceDefinition(fileString)
+		crd := componentConfig.NewCustomResourceDefinition(fileString)
 		_, _, _ = resourceapply.DeleteCustomResourceDefinition(r.apiextclient.ApiextensionsV1beta1(), crd)
 	}
 }

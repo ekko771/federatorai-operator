@@ -31,6 +31,10 @@ spec:
           env:
             - name: FEDERATORAI_DASHBOARD_BACKEND_PORT
               value: "8081"
+            - name: FEDERATORAI_DASHBOARD_OPEN_VPA
+              value: {{if .Execution.EnabledVPA}}"true"{{else}}"false"{{end}}
+            - name: FEDERATORAI_DASHBOARD_OPEN_GPU
+              value: {{if .FederatoraiAgentGPU.Enabled}}"true"{{else}}"false"{{end}}
           resources:
             {}
           readinessProbe:

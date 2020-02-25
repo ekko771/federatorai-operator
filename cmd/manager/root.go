@@ -10,13 +10,13 @@ import (
 	"time"
 
 	autoscaling_v1alpha1 "github.com/containers-ai/alameda/operator/api/v1alpha1"
-
 	fedOperator "github.com/containers-ai/federatorai-operator"
 	assets "github.com/containers-ai/federatorai-operator/assets"
 	"github.com/containers-ai/federatorai-operator/cmd/patch/prometheus"
 	"github.com/containers-ai/federatorai-operator/cmd/upgrader"
 	"github.com/containers-ai/federatorai-operator/pkg/apis"
 	assetsBin "github.com/containers-ai/federatorai-operator/pkg/assets"
+	"github.com/containers-ai/federatorai-operator/pkg/component"
 	"github.com/containers-ai/federatorai-operator/pkg/consts"
 	"github.com/containers-ai/federatorai-operator/pkg/controller"
 	"github.com/containers-ai/federatorai-operator/pkg/lib/resourceread"
@@ -293,20 +293,18 @@ func createCustomeResourceDefinitions(clientConfig *rest.Config) error {
 
 	assets := alamedaserviceparamter.GetCustomResourceDefinitions()
 	for _, asset := range assets {
-		assetBytes, err := assetsBin.Asset(asset)
-		if err != nil {
-			return errors.Errorf("get asset binary data failed: %s", err.Error())
-		}
 
-		crd := resourceread.ReadCustomResourceDefinitionV1Beta1(assetBytes)
+		// Since CRDs will be update later, we can use empty ComponentConfig here.
+		cc := component.ComponentConfig{}
+		crd := cc.NewCustomResourceDefinition(asset)
 		addCRDToRegisterdAPIResources(crd)
 		//use apiExtensionsClientset.ApiextensionsV1() in k8s 1.19 or later
 		_, err = apiExtensionsClientset.ApiextensionsV1beta1().CustomResourceDefinitions().Create(crd)
 		if err != nil && k8sapierrors.IsAlreadyExists(err) {
-			log.V(-1).Info("CustomResourceDefinition is existing in cluster, will not create or update it.", "CustomResourceDefinition name", crd.Name)
+			log.Info("CustomResourceDefinition is existing in cluster, will not create or update it.", "CustomResourceDefinition name", crd.Name)
 			continue
 		} else if err != nil {
-			return errors.Errorf("create CustomResourceDefinition (%s) failed: %s", crd.Name, err.Error())
+			return errors.Wrapf(err, "create CustomResourceDefinition(%s) failed", crd.Name)
 		}
 	}
 	return nil

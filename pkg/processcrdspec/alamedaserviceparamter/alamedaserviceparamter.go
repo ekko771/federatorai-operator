@@ -25,7 +25,6 @@ var (
 		notifierList,
 		federatoraiAgentList,
 		fedemeterList,
-		federatoraiAgentGPUList,
 		federatoraiRestList,
 		frontendList,
 		backendList,
@@ -109,7 +108,7 @@ var (
 		"Route/alameda-grafanaRT.yaml",
 	}
 
-	excutionList = []string{
+	vpaList = []string{
 		"ClusterRoleBinding/alameda-evictionerCRB.yaml",
 		"ClusterRoleBinding/admission-controllerCRB.yaml",
 		"ClusterRole/alameda-evictionerCR.yaml",
@@ -120,6 +119,9 @@ var (
 		"Deployment/admission-controllerDM.yaml",
 		"Deployment/alameda-evictionerDM.yaml",
 		"Service/admission-controllerSV.yaml",
+	}
+
+	hpaList = []string{
 		"Deployment/alameda-executorDM.yaml",
 		"ServiceAccount/alameda-executorSA.yaml",
 		"ClusterRole/alameda-executorCR.yaml",
@@ -282,7 +284,9 @@ func GetPreloaderResource() *Resource {
 
 // GetExcutionResource returns resource that needs to be installed for Execution
 func GetExcutionResource() *Resource {
-	r, _ := getResourceFromList(excutionList)
+	r, _ := getResourceFromList(hpaList)
+	tmp, _ := getResourceFromList(vpaList)
+	r.add(tmp)
 	return &r
 }
 
@@ -327,6 +331,18 @@ func GetFedemeterResource() *Resource {
 // GetWeavescopeResource returns resource that needs to be installed for weavescope
 func GetWeavescopeResource() Resource {
 	r, _ := getResourceFromList(weavescopeList)
+	return r
+}
+
+// GetVPAResource returns resource that needs to be installed for vpa
+func GetVPAResource() Resource {
+	r, _ := getResourceFromList(vpaList)
+	return r
+}
+
+// GetFederatoraiAgentGPU returns resource that needs to be installed for federatorai-agent-gpu
+func GetFederatoraiAgentGPU() Resource {
+	r, _ := getResourceFromList(federatoraiAgentGPUList)
 	return r
 }
 
@@ -377,6 +393,8 @@ type AlamedaServiceParamter struct {
 	Platform                            string
 	EnableExecution                     bool
 	EnableGUI                           bool
+	EnableVPA                           bool
+	EnableGPU                           bool
 	EnableDispatcher                    bool
 	EnablePreloader                     bool
 	EnableWeavescope                    bool
@@ -422,6 +440,8 @@ func NewAlamedaServiceParamter(instance *v1alpha1.AlamedaService) *AlamedaServic
 		Platform:                            instance.Spec.Platform,
 		EnableExecution:                     instance.Spec.EnableExecution,
 		EnableGUI:                           instance.Spec.EnableGUI,
+		EnableVPA:                           *instance.Spec.EnableVPA,
+		EnableGPU:                           *instance.Spec.EnableGPU,
 		EnableDispatcher:                    *instance.Spec.EnableDispatcher,
 		EnablePreloader:                     instance.Spec.EnablePreloader,
 		AutoPatchPrometheusRules:            instance.Spec.AutoPatchPrometheusRules,
@@ -485,8 +505,12 @@ func (asp *AlamedaServiceParamter) GetInstallResource() *Resource {
 		resource.add(r)
 	}
 	if asp.EnableExecution {
-		r, _ := getResourceFromList(excutionList)
+		r, _ := getResourceFromList(hpaList)
 		resource.add(r)
+		if asp.EnableVPA {
+			r, _ := getResourceFromList(vpaList)
+			resource.add(r)
+		}
 	}
 	if asp.EnableDispatcher {
 		r := GetDispatcherResource()
@@ -499,6 +523,10 @@ func (asp *AlamedaServiceParamter) GetInstallResource() *Resource {
 	if asp.EnableWeavescope {
 		weavescopeResource := GetWeavescopeResource()
 		resource.add(weavescopeResource)
+	}
+	if asp.EnableGPU {
+		r := GetFederatoraiAgentGPU()
+		resource.add(r)
 	}
 
 	if asp.hasToInstallAlamedaAcalerV2() {

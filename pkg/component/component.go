@@ -53,6 +53,7 @@ type ComponentConfig struct {
 
 	FederatoraiAgentGPU FederatoraiAgentGPUConfig
 	AIDispatcher        AIDispatcherConfig
+	Execution           ExecutionConfig
 
 	Image ImageConfig
 
@@ -83,22 +84,6 @@ func NewComponentConfig(ptc PodTemplateConfig, alamedaService federatoraiv1alpha
 
 	for _, opt := range opts {
 		opt(&c)
-	}
-
-	faiAgentGPUSectionSet := alamedaService.Spec.FederatoraiAgentGPUSectionSet
-	if faiAgentGPUSectionSet.Prometheus != nil {
-		c.FederatoraiAgentGPU.Datasource.Prometheus.Address = faiAgentGPUSectionSet.Prometheus.Address
-		c.FederatoraiAgentGPU.Datasource.Prometheus.BasicAuth.Username = faiAgentGPUSectionSet.Prometheus.Username
-		c.FederatoraiAgentGPU.Datasource.Prometheus.BasicAuth.Password = faiAgentGPUSectionSet.Prometheus.Password
-	}
-	if faiAgentGPUSectionSet.InfluxDB != nil {
-		c.FederatoraiAgentGPU.Datasource.InfluxDB.Address = faiAgentGPUSectionSet.InfluxDB.Address
-		c.FederatoraiAgentGPU.Datasource.InfluxDB.BasicAuth.Username = faiAgentGPUSectionSet.InfluxDB.Username
-		c.FederatoraiAgentGPU.Datasource.InfluxDB.BasicAuth.Password = faiAgentGPUSectionSet.InfluxDB.Password
-	}
-
-	if alamedaService.Spec.EnableDispatcher != nil {
-		c.AIDispatcher.Enabled = *alamedaService.Spec.EnableDispatcher
 	}
 
 	return &c
@@ -146,6 +131,7 @@ func (c ComponentConfig) NewClusterRoleBinding(str string) *rbacv1.ClusterRoleBi
 	crb := resourceread.ReadClusterRoleBindingV1(c.templateAssets(string(crbByte[:])))
 	return crb
 }
+
 func (c ComponentConfig) NewClusterRole(str string) *rbacv1.ClusterRole {
 	crByte, err := assets.Asset(str)
 	if err != nil {
@@ -515,12 +501,12 @@ func (c ComponentConfig) NewAPIService(str string) (*apiregistrationv1beta1.APIS
 	return resource, nil
 }
 
-func (c ComponentConfig) RegistryCustomResourceDefinition(str string) *apiextv1beta1.CustomResourceDefinition {
+func (c ComponentConfig) NewCustomResourceDefinition(str string) *apiextv1beta1.CustomResourceDefinition {
 	crdBytes, err := assets.Asset(str)
 	if err != nil {
 		log.Error(err, "Failed to Test create testcrd")
 	}
-	crd := resourceread.ReadCustomResourceDefinitionV1Beta1(crdBytes)
+	crd := resourceread.ReadCustomResourceDefinitionV1Beta1(c.templateAssets(string(crdBytes[:])))
 	return crd
 }
 

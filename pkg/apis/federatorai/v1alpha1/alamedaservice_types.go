@@ -44,6 +44,8 @@ type AlamedaServiceSpec struct {
 	Platform                 Platform              `json:"platform,omitempty"`
 	EnableExecution          bool                  `json:"enableExecution"`
 	EnableGUI                bool                  `json:"enableGui"`
+	EnableVPA                *bool                 `json:"enableVPA"`
+	EnableGPU                *bool                 `json:"enableGPU"`
 	EnableDispatcher         *bool                 `json:"enableDispatcher"`
 	EnablePreloader          bool                  `json:"enablePreloader"`
 	SelfDriving              bool                  `json:"selfDriving"`
@@ -257,14 +259,23 @@ type AlamedaService struct {
 
 // SetDefaultValue sets default value into AlamedaServie
 func (as *AlamedaService) SetDefaultValue() {
-
 	if as == nil {
 		as = &AlamedaService{}
 	}
 
 	if as.Spec.EnableDispatcher == nil {
-		enableDispatcher := true
-		as.Spec.EnableDispatcher = &enableDispatcher
+		enable := true
+		as.Spec.EnableDispatcher = &enable
+	}
+
+	if as.Spec.EnableVPA == nil {
+		enable := true
+		as.Spec.EnableVPA = &enable
+	}
+
+	if as.Spec.EnableGPU == nil {
+		enable := true
+		as.Spec.EnableGPU = &enable
 	}
 }
 

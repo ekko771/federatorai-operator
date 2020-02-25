@@ -45,11 +45,13 @@ type FederatoraiAgentGPUDatasourceConfig struct {
 }
 
 type FederatoraiAgentGPUConfig struct {
+	Enabled    bool
 	Datasource FederatoraiAgentGPUDatasourceConfig
 }
 
 func NewDefaultFederatoraiAgentGPUConfig() FederatoraiAgentGPUConfig {
 	return FederatoraiAgentGPUConfig{
+		Enabled: false,
 		Datasource: FederatoraiAgentGPUDatasourceConfig{
 			InfluxDB: InfluxDBConfig{
 				Address: "",
@@ -76,5 +78,15 @@ type AIDispatcherConfig struct {
 func NewDefaultAIDispatcherConfig() AIDispatcherConfig {
 	return AIDispatcherConfig{
 		Enabled: true,
+	}
+}
+
+type ExecutionConfig struct {
+	EnabledVPA bool
+}
+
+func NewDefaultExecutionConfig() ExecutionConfig {
+	return ExecutionConfig{
+		EnabledVPA: true,
 	}
 }

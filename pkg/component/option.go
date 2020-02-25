@@ -37,3 +37,21 @@ func WithKafkaConfig(config KafkaConfig) ComponentConfigOption {
 		cc.Kafka = config
 	}
 }
+
+func WithExecutionConfig(config ExecutionConfig) ComponentConfigOption {
+	return func(cc *ComponentConfig) {
+		cc.Execution = config
+	}
+}
+
+func WithFederatoraiAgentGPUConfig(config FederatoraiAgentGPUConfig) ComponentConfigOption {
+	return func(cc *ComponentConfig) {
+		cc.FederatoraiAgentGPU = config
+	}
+}
+
+func WithAIDispatcherConfig(config AIDispatcherConfig) ComponentConfigOption {
+	return func(cc *ComponentConfig) {
+		cc.AIDispatcher = config
+	}
+}
