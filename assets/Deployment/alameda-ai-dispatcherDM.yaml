@@ -18,9 +18,6 @@ spec:
         app: alameda
         component: alameda-ai-dispatcher
     spec:
-      volumes:
-      - name:  alameda-dispatcher-data-storage
-      - name:  alameda-dispatcher-log-storage
       containers:
         - name: ai-dispatcher
           ports:
@@ -64,3 +61,5 @@ spec:
         - name: alameda-ai-dispatcher-config
           configMap:
             name: alameda-ai-dispatcher-config
+        - name:  alameda-dispatcher-data-storage
+        - name:  alameda-dispatcher-log-storage

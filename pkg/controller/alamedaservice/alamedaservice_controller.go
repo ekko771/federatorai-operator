@@ -992,7 +992,6 @@ func (r *ReconcileAlamedaService) createSecret(instance *federatoraiv1alpha1.Ala
 	}
 	err = r.client.Create(context.TODO(), secret)
 	if err != nil && k8sErrors.IsAlreadyExists(err) {
-		log.Info("create secret failed: secret is already exists", "secret.Namespace", secret.Namespace, "secret.Name", secret.Name)
 	} else if err != nil {
 		return errors.Errorf("get secret %s/%s failed: %s", secret.Namespace, secret.Name, err.Error())
 	}
@@ -1005,7 +1004,6 @@ func (r *ReconcileAlamedaService) createSecret(instance *federatoraiv1alpha1.Ala
 	}
 	err = r.client.Create(context.TODO(), secret)
 	if err != nil && k8sErrors.IsAlreadyExists(err) {
-		log.Info("create secret failed: secret is already exists", "secret.Namespace", secret.Namespace, "secret.Name", secret.Name)
 	} else if err != nil {
 		return errors.Errorf("get secret %s/%s failed: %s", secret.Namespace, secret.Name, err.Error())
 	}
@@ -1018,7 +1016,6 @@ func (r *ReconcileAlamedaService) createSecret(instance *federatoraiv1alpha1.Ala
 	}
 	err = r.client.Create(context.TODO(), secret)
 	if err != nil && k8sErrors.IsAlreadyExists(err) {
-		log.Info("create secret failed: secret is already exists", "secret.Namespace", secret.Namespace, "secret.Name", secret.Name)
 	} else if err != nil {
 		return errors.Errorf("get secret %s/%s failed: %s", secret.Namespace, secret.Name, err.Error())
 	}
@@ -1037,8 +1034,6 @@ func (r *ReconcileAlamedaService) createSecret(instance *federatoraiv1alpha1.Ala
 	}
 	err = r.client.Create(context.TODO(), notifierWebhookServiceSecret)
 	if err != nil && k8sErrors.IsAlreadyExists(err) {
-		log.Info("create secret failed: secret is already exists", "secret.Namespace",
-			notifierWebhookServiceSecret.Namespace, "secret.Name", notifierWebhookServiceSecret.Name)
 	} else if err != nil {
 		return errors.Errorf("get secret %s/%s failed: %s",
 			notifierWebhookServiceSecret.Namespace, notifierWebhookServiceSecret.Name, err.Error())
@@ -1058,8 +1053,6 @@ func (r *ReconcileAlamedaService) createSecret(instance *federatoraiv1alpha1.Ala
 	}
 	err = r.client.Create(context.TODO(), operatorWebhookServiceSecret)
 	if err != nil && k8sErrors.IsAlreadyExists(err) {
-		log.Info("create secret failed: secret is already exists", "secret.Namespace",
-			operatorWebhookServiceSecret.Namespace, "secret.Name", operatorWebhookServiceSecret.Name)
 	} else if err != nil {
 		return errors.Errorf("get secret %s/%s failed: %s",
 			operatorWebhookServiceSecret.Namespace, operatorWebhookServiceSecret.Name, err.Error())
