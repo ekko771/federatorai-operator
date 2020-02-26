@@ -53,7 +53,7 @@ spec:
             - probe
             - --type=readiness
           initialDelaySeconds: 5
-          periodSeconds: 5
+          periodSeconds: 60
           timeoutSeconds: 5
         livenessProbe:
           exec:
@@ -62,7 +62,7 @@ spec:
             - probe
             - --type=liveness
           initialDelaySeconds: 5
-          periodSeconds: 5
+          periodSeconds: 60
           timeoutSeconds: 5
       volumes:
       - name:  alameda-datahub-data-storage

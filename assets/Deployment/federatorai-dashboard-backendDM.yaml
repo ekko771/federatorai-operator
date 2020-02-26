@@ -43,7 +43,7 @@ spec:
               - /probe.sh
               - --type=readiness
             initialDelaySeconds: 5
-            periodSeconds: 5
+            periodSeconds: 60
             timeoutSeconds: 5
           livenessProbe:
             exec:
@@ -51,7 +51,7 @@ spec:
               - /probe.sh
               - --type=liveness
             initialDelaySeconds: 5
-            periodSeconds: 5
+            periodSeconds: 60
             timeoutSeconds: 5
           volumeMounts:
           - mountPath: /federatorai-portal/server/config

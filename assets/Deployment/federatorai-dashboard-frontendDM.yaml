@@ -41,7 +41,7 @@ spec:
               - /probe.sh
               - --type=readiness
             initialDelaySeconds: 5
-            periodSeconds: 5
+            periodSeconds: 60
             timeoutSeconds: 5
           livenessProbe:
             exec:
@@ -49,7 +49,7 @@ spec:
               - /probe.sh
               - --type=liveness
             initialDelaySeconds: 5
-            periodSeconds: 5
+            periodSeconds: 60
             timeoutSeconds: 5
       volumes:
       - name:  federatorai-frontend-data-storage
