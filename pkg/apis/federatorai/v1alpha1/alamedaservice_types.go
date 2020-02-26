@@ -274,7 +274,7 @@ func (as *AlamedaService) SetDefaultValue() {
 	}
 
 	if as.Spec.EnableGPU == nil {
-		enable := true
+		enable := false
 		as.Spec.EnableGPU = &enable
 	}
 }
