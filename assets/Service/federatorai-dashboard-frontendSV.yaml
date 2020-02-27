@@ -10,4 +10,4 @@ spec:
     component: federatorai-dashboard-frontend
   ports:
   - port: 9000
-    name: "listen-port"
+    name: "frontend-http"
