@@ -18,6 +18,11 @@ import (
 type GroupEnums string
 
 const (
+	Openshift_FEDEMETER_WORKER_NODE_LOWER_LIMIT = "1"
+	Openshift_FEDEMETER_FILTER_TABLE            = "no_filter"
+	NKS_FEDEMETER_WORKER_NODE_LOWER_LIMIT       = "2"
+	NKS_FEDEMETER_FILTER_TABLE                  = "stackpoint_filter"
+
 	FedemeterGroup GroupEnums = "alameda/fedemeter"
 	AlamedaGroup   GroupEnums = "alameda"
 	GrafanaGroup   GroupEnums = "grafana"

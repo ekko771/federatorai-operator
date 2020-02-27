@@ -57,8 +57,9 @@ type ComponentConfig struct {
 
 	Image ImageConfig
 
-	Prometheus PrometheusConfig
-	Kafka      KafkaConfig
+	Prometheus      PrometheusConfig
+	Kafka           KafkaConfig
+	FedemeterConfig FedemeterConfig
 }
 
 func NewComponentConfig(ptc PodTemplateConfig, alamedaService federatoraiv1alpha1.AlamedaService, opts ...ComponentConfigOption) *ComponentConfig {
@@ -80,6 +81,7 @@ func NewComponentConfig(ptc PodTemplateConfig, alamedaService federatoraiv1alpha
 		AIDispatcher:             NewDefaultAIDispatcherConfig(),
 		Image:                    NewDefautlImageConfig(),
 		Prometheus:               defaultPrometheusConfig,
+		FedemeterConfig:          NewDefaultFedemeterConfig(),
 	}
 
 	for _, opt := range opts {

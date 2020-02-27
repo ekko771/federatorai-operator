@@ -8,3 +8,5 @@ data:
     FEDEMETER_INFLUXDB_PORT: "8086"
     DATAHUB_HOST: "alameda-datahub.{{.NameSpace}}"
     DATAHUB_PORT: "50050"
+    FEDEMETER_WORKER_NODE_LOWER_LIMIT: "{{.FedemeterConfig.FedemeterWorkerNodeLowerLimit}}"
+    FEDEMETER_FILTER_TABLE: "{{.FedemeterConfig.FedemeterFilterTable}}"

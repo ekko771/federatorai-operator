@@ -608,6 +608,7 @@ func (r *ReconcileAlamedaService) newComponentConfig(namespace corev1.Namespace,
 	aiDispatcher := component.AIDispatcherConfig{}
 	aiDispatcher.Enabled = asp.EnableDispatcher
 
+	clusterType := resourceapply.CheckClusterType(r.apiextclient.ApiextensionsV1beta1())
 	componentConfg := component.NewComponentConfig(podTemplateConfig, alamedaService,
 		component.WithNamespace(namespace.Name),
 		component.WithImageConfig(imageConfig),
@@ -615,6 +616,7 @@ func (r *ReconcileAlamedaService) newComponentConfig(namespace corev1.Namespace,
 		component.WithPodSecurityPolicyVersion(r.podSecurityPolicesApiGroupVersion.Version),
 		component.WithPrometheusConfig(prometheusConfig),
 		component.WithKafkaConfig(kafka),
+		component.WithFedermeterConfig(clusterType),
 		component.WithExecutionConfig(execition),
 		component.WithFederatoraiAgentGPUConfig(faiAgentGPU),
 		component.WithAIDispatcherConfig(aiDispatcher),

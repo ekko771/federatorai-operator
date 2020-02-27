@@ -1,5 +1,9 @@
 package component
 
+import (
+	"github.com/containers-ai/federatorai-operator/pkg/util"
+)
+
 type InfluxDBConfig struct {
 	Address   string
 	BasicAuth BasicAuth
@@ -15,6 +19,11 @@ type PrometheusConfig struct {
 	TLS             TLSConfig
 }
 
+type FedemeterConfig struct {
+	FedemeterWorkerNodeLowerLimit string
+	FedemeterFilterTable          string
+}
+
 type KafkaConfig struct {
 	Enabled         bool
 	BrokerAddresses []string
@@ -22,6 +31,13 @@ type KafkaConfig struct {
 
 	SASL SASLConfig
 	TLS  TLSConfig
+}
+
+func NewDefaultFedemeterConfig() FedemeterConfig {
+	return FedemeterConfig{
+		FedemeterWorkerNodeLowerLimit: util.Openshift_FEDEMETER_WORKER_NODE_LOWER_LIMIT,
+		FedemeterFilterTable:          util.Openshift_FEDEMETER_FILTER_TABLE,
+	}
 }
 
 type BasicAuth struct {
