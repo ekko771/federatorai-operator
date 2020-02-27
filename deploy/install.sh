@@ -206,7 +206,7 @@ wait_until_pods_ready()
 get_grafana_route()
 {
     if [ "$openshift_minor_version" != "" ] ; then
-        link=`oc get route -n $1 2>/dev/null|grep grafana|awk '{print $2}'`
+        link=`oc get route -n $1 2>/dev/null|grep "federatorai-dashboard-frontend"|awk '{print $2}'`
         if [ "$link" != "" ] ; then
         echo -e "\n========================================"
         echo "You can now access GUI through $(tput setaf 6)https://${link} $(tput sgr 0)"
@@ -220,7 +220,7 @@ get_grafana_route()
     else
         if [ "$expose_service" = "y" ]; then
             echo -e "\n========================================"
-            echo "You can now access GUI through $(tput setaf 6)https://<YOUR IP>:$grafana_node_port $(tput sgr 0)"
+            echo "You can now access GUI through $(tput setaf 6)https://<YOUR IP>:$dashboard_frontend_node_port $(tput sgr 0)"
             echo "Default login credential is $(tput setaf 6)admin/admin$(tput sgr 0)"
             echo -e "\nAlso, you can start to apply alamedascaler CR for the namespace you would like to monitor."
             echo "$(tput setaf 6)Review administration guide for further details.$(tput sgr 0)"
@@ -627,8 +627,9 @@ if [ "$silent_mode_disabled" = "y" ] && [ "$need_upgrade" != "y" ];then
     done
 fi
 
-grafana_node_port="31010"
+#grafana_node_port="31010"
 rest_api_node_port="31011"
+dashboard_frontend_node_port="31012"
 
 if [ "$need_upgrade" != "y" ]; then 
     # First time installation case
@@ -656,15 +657,22 @@ if [ "$need_upgrade" != "y" ]; then
 __EOF__
     fi
 
+    # enableGPU: false
+    # enableVPA: true
+    cat >> ${alamedaservice_example} << __EOF__
+  enableGPU: false
+  enableVPA: true
+__EOF__
+
     if [ "$openshift_minor_version" = "" ]; then #k8s
         if [ "$expose_service" = "y" ] || [ "$expose_service" = "Y" ]; then
             cat >> ${alamedaservice_example} << __EOF__
   serviceExposures:
-    - name: alameda-grafana
+    - name: federatorai-dashboard-frontend
       nodePort:
         ports:
-          - nodePort: ${grafana_node_port}
-            port: 3001
+          - nodePort: ${dashboard_frontend_node_port}
+            port: 9000
       type: NodePort
     - name: federatorai-rest
       nodePort:
