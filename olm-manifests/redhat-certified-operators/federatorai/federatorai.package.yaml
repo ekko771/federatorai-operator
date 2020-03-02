@@ -1,5 +1,5 @@
 channels:
-- currentCSV: federatorai.v4.2.605
+- currentCSV: federatorai.v4.2.608
   name: stable
 defaultChannel: stable
 packageName: federatorai-certified
