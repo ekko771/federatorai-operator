@@ -672,7 +672,7 @@ __EOF__
       nodePort:
         ports:
           - nodePort: ${dashboard_frontend_node_port}
-            port: 9000
+            port: 9001
       type: NodePort
     - name: federatorai-rest
       nodePort:

@@ -9,5 +9,9 @@ spec:
   selector:
     component: federatorai-dashboard-frontend
   ports:
-  - port: 9000
-    name: "frontend-http"
+  - name: frontend-http
+    port: 9000
+    targetPort: 9000
+  - name: frontend-https
+    port: 9001
+    targetPort: 9001
