@@ -15,18 +15,21 @@ data:
         schedule-spec = "@every 1h"
         lib-path = "/lib/inputlib/costanalysis.so"
         lib-configuration = "/etc/alameda/federatorai-agent/input/cost_analysis_daily.toml"
+        health-check-retry = -1
 
         [input_jobs.cost_analysis_weekly]
         name = "cost_analysis_weekly"
         schedule-spec = "@every 6h"
         lib-path = "/lib/inputlib/costanalysis.so"
         lib-configuration = "/etc/alameda/federatorai-agent/input/cost_analysis_weekly.toml"
+        health-check-retry = -1
 
         [input_jobs.cost_analysis_monthly]
         name = "cost_analysis_monthly"
         schedule-spec = "@every 24h"
         lib-path = "/lib/inputlib/costanalysis.so"
         lib-configuration = "/etc/alameda/federatorai-agent/input/cost_analysis_monthly.toml"
+        health-check-retry = -1
 
   cost_analysis_daily.toml: |
     [datahub]
