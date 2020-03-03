@@ -5,6 +5,7 @@
 #   This script is created for demo purpose.
 #   Usage:
 #       [-p] # Prepare environment
+#       [-x pod autoscaling method] # Specified hpa or vpa as pod autoscaling method 
 #       [-c] # clean environment for preloader test
 #       [-e] # Enable preloader pod
 #       [-r] # Run preloader
@@ -22,6 +23,7 @@ show_usage()
 
     Usage:
         [-p] # Prepare environment
+        [-x pod autoscaling method] # Specified hpa or vpa as pod autoscaling method
         [-c] # clean environment for preloader test
         [-e] # Enable preloader pod
         [-r] # Run preloader
@@ -637,7 +639,7 @@ spec:
     policy: stable
     enableExecution: false
     scalingTool:
-        type: vpa
+        type: ${autoscaling_method}
     selector:
         matchLabels:
             app: ${label_name}
@@ -820,7 +822,7 @@ if [ "$#" -eq "0" ]; then
     exit
 fi
 
-while getopts "f:ecpvrdhn:" o; do
+while getopts "f:x:ecpvrdhn:" o; do
     case "${o}" in
         p)
             prepare_environment="y"
@@ -837,6 +839,10 @@ while getopts "f:ecpvrdhn:" o; do
         f)
             future_mode_enabled="y"
             f_arg=${OPTARG}
+            ;;
+        x)
+            autoscaling_specified="y"
+            x_arg=${OPTARG}
             ;;
         n)
             nginx_name_specified="y"
@@ -864,6 +870,15 @@ if [ "$future_mode_enabled" = "y" ]; then
         ''|*[!0-9]*) echo -e "\n$(tput setaf 1)future mode length (hour) needs to be integer.$(tput sgr 0)" && show_usage ;;
         *) ;;
     esac
+fi
+
+if [ "$autoscaling_specified" = "y" ]; then
+    autoscaling_method=$x_arg
+    if [ "$autoscaling_method" != "vpa" ] && [ "$autoscaling_method" != "hpa" ]; then
+        echo -e "\n$(tput setaf 1) Pod autoscaling method needs to be \"vpa\" or \"hpa\".$(tput sgr 0)" && show_usage
+    fi
+else
+    autoscaling_method="hpa"
 fi
 
 if [ "$nginx_name_specified" = "y" ]; then
