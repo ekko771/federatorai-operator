@@ -33,6 +33,28 @@ spec:
           - name: federatorai-agent-config
             mountPath: /etc/alameda/federatorai-agent/input/cost_analysis_monthly.toml
             subPath: cost_analysis_monthly.toml
+        livenessProbe:
+          exec:
+            command:
+              - /opt/alameda/federatorai-agent/bin/transmitter
+              - probe
+              - --type=liveness
+          failureThreshold: 20
+          initialDelaySeconds: 5
+          periodSeconds: 60
+          successThreshold: 1
+          timeoutSeconds: 5
+        readinessProbe:
+          exec:
+            command:
+              - /opt/alameda/federatorai-agent/bin/transmitter
+              - probe
+              - --type=readiness
+          failureThreshold: 20
+          initialDelaySeconds: 5
+          periodSeconds: 60
+          successThreshold: 1
+          timeoutSeconds: 5
       volumes:
       - name: federatorai-agent-config
         configMap:
