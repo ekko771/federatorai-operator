@@ -41,14 +41,14 @@ data:
 
     [[datasource.prometheus.measurement]]
     name = "kafka_topic_partition_current_offset"
-    expr = "sum(rate(kafka_topic_partition_current_offset[1m])) by (consumergroup,topic,namespace)"
+    expr = "sum(delta(kafka_topic_partition_current_offset[5m])/5) by (consumergroup,topic,namespace) / 60"
     tags = ["consumergroup","topic","namespace"]
     [datasource.prometheus.measurement.element.value]
     type = "float"
 
     [[datasource.prometheus.measurement]]
     name = "kafka_consumer_group_current_offset"
-    expr = "sum(rate(kafka_consumergroup_current_offset[1m])) by (consumergroup,topic,namespace)"
+    expr = "sum(delta(kafka_consumergroup_current_offset[5m])/5) by (consumergroup,topic,namespace) / 60"
     tags = ["consumergroup","topic","namespace"]
     [datasource.prometheus.measurement.element.value]
     type = "float"
