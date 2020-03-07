@@ -32,12 +32,12 @@ data:
     [kafka]
     terminating_time = 30
     algo_interval = 60
-    upper_resource_tolerance = 0.25
-    lower_resource_tolerance = 0.25
+    upper_resource_tolerance = 0
+    lower_resource_tolerance = 0.05
     qos_threshold = 5
     [kafka.weight]
     cpu = 0.000031611
     memory = 0
-    io = 0
+    io = 0.02541
     storage = 0
     request = 0.000005
