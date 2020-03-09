@@ -24,3 +24,4 @@ debug
 pkg/assets/*.go
 cmd/patch/pkg/assets/*.go
 *.log
+.idea/*

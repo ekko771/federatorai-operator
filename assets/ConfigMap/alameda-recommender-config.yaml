@@ -41,3 +41,4 @@ data:
     storage = 0
     scaling_up_weight = 1
     scaling_down_weight = 2
+    scaling_down_speed = 300
