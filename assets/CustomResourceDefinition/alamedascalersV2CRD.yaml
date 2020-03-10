@@ -101,8 +101,6 @@ spec:
                                       type: object
                                     type: array
                                   matchLabels:
-                                    additionalProperties:
-                                      type: string
                                     description: matchLabels is a map of {key,value}
                                       pairs. A single {key,value} in the matchLabels
                                       map is equivalent to an element of matchExpressions,
@@ -142,14 +140,10 @@ spec:
                         requirements.
                       properties:
                         limits:
-                          additionalProperties:
-                            type: string
                           description: 'Limits describes the maximum amount of compute
                             resources allowed. More info: https://kubernetes.io/docs/concepts/configuration/manage-compute-resources-container/'
                           type: object
                         requests:
-                          additionalProperties:
-                            type: string
                           description: 'Requests describes the minimum amount of compute
                             resources required. If Requests is omitted for a container,
                             it defaults to Limits if that is explicitly specified,
@@ -214,8 +208,6 @@ spec:
                     type: object
                   type: array
                 matchLabels:
-                  additionalProperties:
-                    type: string
                   description: matchLabels is a map of {key,value} pairs. A single
                     {key,value} in the matchLabels map is equivalent to an element
                     of matchExpressions, whose key field is "key", the operator is
@@ -232,220 +224,196 @@ spec:
             alamedaController:
               properties:
                 deploymentConfigs:
-                  additionalProperties:
-                    properties:
-                      effective:
-                        type: boolean
-                      message:
-                        type: string
-                      name:
-                        type: string
-                      namespace:
-                        type: string
-                      pods:
-                        additionalProperties:
-                          properties:
-                            containers:
-                              items:
+                  properties:
+                    effective:
+                      type: boolean
+                    message:
+                      type: string
+                    name:
+                      type: string
+                    namespace:
+                      type: string
+                    pods:
+                      properties:
+                        containers:
+                          items:
+                            properties:
+                              name:
+                                type: string
+                              resources:
+                                description: ResourceRequirements describes the
+                                  compute resource requirements.
                                 properties:
-                                  name:
-                                    type: string
-                                  resources:
-                                    description: ResourceRequirements describes the
-                                      compute resource requirements.
-                                    properties:
-                                      limits:
-                                        additionalProperties:
-                                          type: string
-                                        description: 'Limits describes the maximum
-                                          amount of compute resources allowed. More
-                                          info: https://kubernetes.io/docs/concepts/configuration/manage-compute-resources-container/'
-                                        type: object
-                                      requests:
-                                        additionalProperties:
-                                          type: string
-                                        description: 'Requests describes the minimum
-                                          amount of compute resources required. If
-                                          Requests is omitted for a container, it
-                                          defaults to Limits if that is explicitly
-                                          specified, otherwise to an implementation-defined
-                                          value. More info: https://kubernetes.io/docs/concepts/configuration/manage-compute-resources-container/'
-                                        type: object
+                                  limits:
+                                    description: 'Limits describes the maximum
+                                      amount of compute resources allowed. More
+                                      info: https://kubernetes.io/docs/concepts/configuration/manage-compute-resources-container/'
                                     type: object
-                                required:
-                                - name
+                                  requests:
+                                    description: 'Requests describes the minimum
+                                      amount of compute resources required. If
+                                      Requests is omitted for a container, it
+                                      defaults to Limits if that is explicitly
+                                      specified, otherwise to an implementation-defined
+                                      value. More info: https://kubernetes.io/docs/concepts/configuration/manage-compute-resources-container/'
+                                    type: object
                                 type: object
-                              type: array
-                            name:
-                              type: string
-                            namespace:
-                              type: string
-                            uid:
-                              type: string
-                          required:
-                          - containers
-                          - name
-                          - namespace
-                          - uid
-                          type: object
-                        type: object
-                      specReplicas:
-                        format: int32
-                        type: integer
-                      uid:
-                        type: string
-                    required:
-                    - effective
-                    - message
-                    - name
-                    - namespace
-                    - specReplicas
-                    - uid
-                    type: object
+                            required:
+                            - name
+                            type: object
+                          type: array
+                        name:
+                          type: string
+                        namespace:
+                          type: string
+                        uid:
+                          type: string
+                      required:
+                      - containers
+                      - name
+                      - namespace
+                      - uid
+                      type: object
+                    specReplicas:
+                      format: int32
+                      type: integer
+                    uid:
+                      type: string
+                  required:
+                  - effective
+                  - message
+                  - name
+                  - namespace
+                  - specReplicas
+                  - uid
                   type: object
                 deployments:
-                  additionalProperties:
-                    properties:
-                      effective:
-                        type: boolean
-                      message:
-                        type: string
-                      name:
-                        type: string
-                      namespace:
-                        type: string
-                      pods:
-                        additionalProperties:
-                          properties:
-                            containers:
-                              items:
+                  properties:
+                    effective:
+                      type: boolean
+                    message:
+                      type: string
+                    name:
+                      type: string
+                    namespace:
+                      type: string
+                    pods:
+                      properties:
+                        containers:
+                          items:
+                            properties:
+                              name:
+                                type: string
+                              resources:
+                                description: ResourceRequirements describes the
+                                  compute resource requirements.
                                 properties:
-                                  name:
-                                    type: string
-                                  resources:
-                                    description: ResourceRequirements describes the
-                                      compute resource requirements.
-                                    properties:
-                                      limits:
-                                        additionalProperties:
-                                          type: string
-                                        description: 'Limits describes the maximum
-                                          amount of compute resources allowed. More
-                                          info: https://kubernetes.io/docs/concepts/configuration/manage-compute-resources-container/'
-                                        type: object
-                                      requests:
-                                        additionalProperties:
-                                          type: string
-                                        description: 'Requests describes the minimum
-                                          amount of compute resources required. If
-                                          Requests is omitted for a container, it
-                                          defaults to Limits if that is explicitly
-                                          specified, otherwise to an implementation-defined
-                                          value. More info: https://kubernetes.io/docs/concepts/configuration/manage-compute-resources-container/'
-                                        type: object
+                                  limits:
+                                    description: 'Limits describes the maximum
+                                      amount of compute resources allowed. More
+                                      info: https://kubernetes.io/docs/concepts/configuration/manage-compute-resources-container/'
                                     type: object
-                                required:
-                                - name
+                                  requests:
+                                    description: 'Requests describes the minimum
+                                      amount of compute resources required. If
+                                      Requests is omitted for a container, it
+                                      defaults to Limits if that is explicitly
+                                      specified, otherwise to an implementation-defined
+                                      value. More info: https://kubernetes.io/docs/concepts/configuration/manage-compute-resources-container/'
+                                    type: object
                                 type: object
-                              type: array
-                            name:
-                              type: string
-                            namespace:
-                              type: string
-                            uid:
-                              type: string
-                          required:
-                          - containers
-                          - name
-                          - namespace
-                          - uid
-                          type: object
-                        type: object
-                      specReplicas:
-                        format: int32
-                        type: integer
-                      uid:
-                        type: string
-                    required:
-                    - effective
-                    - message
-                    - name
-                    - namespace
-                    - specReplicas
-                    - uid
-                    type: object
+                            required:
+                            - name
+                            type: object
+                          type: array
+                        name:
+                          type: string
+                        namespace:
+                          type: string
+                        uid:
+                          type: string
+                      required:
+                      - containers
+                      - name
+                      - namespace
+                      - uid
+                      type: object
+                    specReplicas:
+                      format: int32
+                      type: integer
+                    uid:
+                      type: string
+                  required:
+                  - effective
+                  - message
+                  - name
+                  - namespace
+                  - specReplicas
+                  - uid
                   type: object
                 statefulSets:
-                  additionalProperties:
-                    properties:
-                      effective:
-                        type: boolean
-                      message:
-                        type: string
-                      name:
-                        type: string
-                      namespace:
-                        type: string
-                      pods:
-                        additionalProperties:
-                          properties:
-                            containers:
-                              items:
+                  properties:
+                    effective:
+                      type: boolean
+                    message:
+                      type: string
+                    name:
+                      type: string
+                    namespace:
+                      type: string
+                    pods:
+                      properties:
+                        containers:
+                          items:
+                            properties:
+                              name:
+                                type: string
+                              resources:
+                                description: ResourceRequirements describes the
+                                  compute resource requirements.
                                 properties:
-                                  name:
-                                    type: string
-                                  resources:
-                                    description: ResourceRequirements describes the
-                                      compute resource requirements.
-                                    properties:
-                                      limits:
-                                        additionalProperties:
-                                          type: string
-                                        description: 'Limits describes the maximum
-                                          amount of compute resources allowed. More
-                                          info: https://kubernetes.io/docs/concepts/configuration/manage-compute-resources-container/'
-                                        type: object
-                                      requests:
-                                        additionalProperties:
-                                          type: string
-                                        description: 'Requests describes the minimum
-                                          amount of compute resources required. If
-                                          Requests is omitted for a container, it
-                                          defaults to Limits if that is explicitly
-                                          specified, otherwise to an implementation-defined
-                                          value. More info: https://kubernetes.io/docs/concepts/configuration/manage-compute-resources-container/'
-                                        type: object
+                                  limits:
+                                    description: 'Limits describes the maximum
+                                      amount of compute resources allowed. More
+                                      info: https://kubernetes.io/docs/concepts/configuration/manage-compute-resources-container/'
                                     type: object
-                                required:
-                                - name
+                                  requests:
+                                    description: 'Requests describes the minimum
+                                      amount of compute resources required. If
+                                      Requests is omitted for a container, it
+                                      defaults to Limits if that is explicitly
+                                      specified, otherwise to an implementation-defined
+                                      value. More info: https://kubernetes.io/docs/concepts/configuration/manage-compute-resources-container/'
+                                    type: object
                                 type: object
-                              type: array
-                            name:
-                              type: string
-                            namespace:
-                              type: string
-                            uid:
-                              type: string
-                          required:
-                          - containers
-                          - name
-                          - namespace
-                          - uid
-                          type: object
-                        type: object
-                      specReplicas:
-                        format: int32
-                        type: integer
-                      uid:
-                        type: string
-                    required:
-                    - effective
-                    - message
-                    - name
-                    - namespace
-                    - specReplicas
-                    - uid
-                    type: object
+                            required:
+                            - name
+                            type: object
+                          type: array
+                        name:
+                          type: string
+                        namespace:
+                          type: string
+                        uid:
+                          type: string
+                      required:
+                      - containers
+                      - name
+                      - namespace
+                      - uid
+                      type: object
+                    specReplicas:
+                      format: int32
+                      type: integer
+                    uid:
+                      type: string
+                  required:
+                  - effective
+                  - message
+                  - name
+                  - namespace
+                  - specReplicas
+                  - uid
                   type: object
               type: object
             kafka:
