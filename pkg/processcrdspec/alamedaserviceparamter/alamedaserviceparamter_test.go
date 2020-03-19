@@ -193,8 +193,8 @@ func TestGetAlamedaInfluxdbService(t *testing.T) {
 	assert.Equal("Service/alameda-influxdbSV.yaml", s)
 }
 
-func TestGetAlamedaInfluxdbDeployment(t *testing.T) {
-	s := GetAlamedaInfluxdbDeployment()
+func TestGetAlamedaInfluxdbStatefulSet(t *testing.T) {
+	s := GetAlamedaInfluxdbStatefulSet()
 	assert := assert.New(t)
-	assert.Equal("Deployment/alameda-influxdbDM.yaml", s)
+	assert.Equal("StatefulSet/alameda-influxdbSS.yaml", s)
 }

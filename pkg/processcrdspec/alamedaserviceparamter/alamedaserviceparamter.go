@@ -68,7 +68,7 @@ var (
 
 	influxDBList = []string{
 		"Service/alameda-influxdbSV.yaml",
-		"Deployment/alameda-influxdbDM.yaml",
+		"StatefulSet/alameda-influxdbSS.yaml",
 		"Secret/alameda-influxdb.yaml",
 	}
 
@@ -303,9 +303,9 @@ func GetAlamedaInfluxdbResource() Resource {
 }
 
 // GetAlamedaInfluxdbService returns service that needs to be installed for influxdb
-func GetAlamedaInfluxdbDeployment() string {
+func GetAlamedaInfluxdbStatefulSet() string {
 	for _, r := range influxDBList {
-		if strings.HasPrefix(r, "Deployment/") {
+		if strings.HasPrefix(r, "StatefulSet/") {
 			return r
 		}
 	}

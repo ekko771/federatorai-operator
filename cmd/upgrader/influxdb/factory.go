@@ -34,7 +34,7 @@ func (f resourceFactory) getAlamedaInfluxdbService() corev1.Service {
 }
 
 func (f resourceFactory) getAlamedaInfluxdbConfig() influxdb.Config {
-	influxdbDeploymentAssets := alamedaserviceparamter.GetAlamedaInfluxdbDeployment()
+	influxdbDeploymentAssets := alamedaserviceparamter.GetAlamedaInfluxdbStatefulSet()
 	influxdbDeployment := f.c.NewDeployment(influxdbDeploymentAssets)
 	influxdbServiceAssets := alamedaserviceparamter.GetAlamedaInfluxdbService()
 	influxdbService := f.c.NewService(influxdbServiceAssets)
